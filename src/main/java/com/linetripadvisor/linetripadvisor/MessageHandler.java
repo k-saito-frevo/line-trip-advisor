@@ -1,11 +1,19 @@
 package com.linetripadvisor.linetripadvisor;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 
+import com.linecorp.bot.client.LineMessagingClient;
+import com.linecorp.bot.client.MessageContentResponse;
 import com.linecorp.bot.model.ReplyMessage;
 import com.linecorp.bot.model.event.Event;
 import com.linecorp.bot.model.event.MessageEvent;
@@ -21,12 +29,21 @@ import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 @ComponentScan
 @LineMessageHandler
 public class MessageHandler {
-
+	
+	@Autowired
+    private LineMessagingClient lineMessagingClient;
+	@Autowired
+	ResourceLoader resourceLoader;
+	
+	final String COUNTRY_INFO = "./static/country.json";
 	//テキストメッセージがきた時に呼ばれるよ
     @EventMapping
     public TextMessage handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws IOException {
         System.out.println("event: " + event);
         System.out.println("送られたメッセージ: " + event.getMessage().getText());
+        Resource resource = resourceLoader.getResource(COUNTRY_INFO);
+        System.out.println("ここここ");
+        System.out.println(resource);
         return new TextMessage("");
     }
     
@@ -36,6 +53,12 @@ public class MessageHandler {
     	Object receiveImage = event.getSource();
     	System.out.println("ここだよ");
     	System.out.println(event);
+//    	InputStream responseInputStream = event.getStream();
+//    	InputStream is = getContentStream(event.getMessage());
+//    	MessageContentResponse messageContentResponse = lineMessagingClient.getMessageContent(messageId).get();
+//    	handleContent(
+//                event.getMessage().getId(),
+//                messageContentResponse -> replyMessage(messageContentResponse, event.getReplyToken()));
 //    	BotApiResponse response = replyMessageHandler.reply(event);
     	return new TextMessage("お返ししま〜す");
     }
@@ -43,7 +66,22 @@ public class MessageHandler {
     @EventMapping
     public TextMessage defaultMessageEvent(Event event) {
         System.out.println("デフォルトメッセージ: " + event);
-        return new TextMessage("");
+        return new TextMessage("画像を送って!¥r¥n");
     }
+    /**
+     * メッセージコンテンツを取得する.
+     * @param messageId メッセージID
+     * @param messageConsumer メッセージコンシューマ
+     */
+//    private void handleContent(String messageId, Consumer<MessageContentResponse> messageConsumer) {
+//        final MessageContentResponse messageContentResponse;
+//        try {
+//            messageContentResponse = lineMessagingClient.getMessageContent(messageId).get();
+//        } catch (InterruptedException | ExecutionException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        messageConsumer.accept(messageContentResponse);
+//    }
 
 }

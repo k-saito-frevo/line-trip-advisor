@@ -1,0 +1,10 @@
+{
+	{
+		id:1,
+		name:"日本",
+		pupulation:1億2667万人,
+		first_language:"日本語",
+		currency:"日本円",
+		GDP:$4810billion
+	}
+}
