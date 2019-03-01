@@ -22,30 +22,28 @@ import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 @LineMessageHandler
 public class MessageHandler {
 
-//    private final ReplyMessageHandler replyMessageHandler;
-//
-//    public MessageHandler(ReplyMessageHandler replyMessageHandler) {
-//        super();
-//        this.replyMessageHandler = replyMessageHandler;
-//    }
-
+	//テキストメッセージがきた時に呼ばれるよ
     @EventMapping
-    public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws IOException {
+    public TextMessage handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws IOException {
         System.out.println("event: " + event);
-        System.out.println("Sent messages: " + event.getMessage().getText());
+        System.out.println("送られたメッセージ: " + event.getMessage().getText());
+        return new TextMessage("");
     }
     
+    //イメージファイルがきた時に呼ばれるよ
     @EventMapping
     public TextMessage handleImageMessageEvent(MessageEvent<ImageMessageContent>event) {
     	Object receiveImage = event.getSource();
-    	
+    	System.out.println("ここだよ");
+    	System.out.println(event);
 //    	BotApiResponse response = replyMessageHandler.reply(event);
     	return new TextMessage("お返ししま〜す");
     }
-
+    //それ以外
     @EventMapping
-    public void defaultMessageEvent(Event event) {
-        System.out.println("event: " + event);
+    public TextMessage defaultMessageEvent(Event event) {
+        System.out.println("デフォルトメッセージ: " + event);
+        return new TextMessage("");
     }
 
 }
