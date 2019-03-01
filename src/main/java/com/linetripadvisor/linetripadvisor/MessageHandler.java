@@ -11,6 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.client.MessageContentResponse;
@@ -68,6 +69,11 @@ public class MessageHandler {
         System.out.println("デフォルトメッセージ: " + event);
         return new TextMessage("画像を送って!¥r¥n");
     }
+    @GetMapping("test")
+    public void testEvent() {
+    	System.out.println("ここにきてるよー");
+    }
+    
     /**
      * メッセージコンテンツを取得する.
      * @param messageId メッセージID
