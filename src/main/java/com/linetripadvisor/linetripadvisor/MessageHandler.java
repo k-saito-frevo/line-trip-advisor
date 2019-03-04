@@ -37,8 +37,6 @@ public class MessageHandler {
     private LineMessagingClient lineMessagingClient;
 	@Autowired
 	ResourceLoader resourceLoader;
-	@Autowired
-	ContentService contentService;
 	
 	final String COUNTRY_INFO = "./static/country.json";
 	//テキストメッセージがきた時に呼ばれるよ
