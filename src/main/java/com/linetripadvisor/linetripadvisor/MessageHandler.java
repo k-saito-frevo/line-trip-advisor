@@ -26,6 +26,7 @@ import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 
 import service.ContentService;
+import service.FaceRecognizeService;
 
 @SpringBootApplication
 @EnableAutoConfiguration
@@ -59,9 +60,11 @@ public class MessageHandler {
     	System.out.println(event);
     	System.out.println(receiveImage);
     	ContentService contentService = new ContentService();
-    	String resOfId = contentService.getContent(messageId);
+    	String imgSrc = contentService.getContent(messageId);
+    	FaceRecognizeService faceRecognizeService = new FaceRecognizeService();
+    	String result = faceRecognizeService.tryPost(imgSrc);
     	System.out.println("かえってきた！");
-    	System.out.println(resOfId);
+    	System.out.println(result);
 //    	InputStream responseInputStream = event.getStream();
 //    	InputStream is = getContentStream(event.getMessage());
 //    	MessageContentResponse messageContentResponse = lineMessagingClient.getMessageContent(messageId).get();
