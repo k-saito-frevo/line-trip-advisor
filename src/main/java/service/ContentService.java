@@ -2,7 +2,9 @@ package service;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -23,9 +25,9 @@ public class ContentService {
 			MultiValueMap<String, String> body= new LinkedMultiValueMap<String, String>();
 			HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(body, headers);
 			
-			String result = restTemplate.getForObject(uri,String.class);
+			ResponseEntity<String> result = restTemplate.exchange(uri, HttpMethod.GET, request,String.class);
 			System.out.println(result);
-			return result;	
+			return "test";	
 		}catch(Exception ex) {
 			System.out.println(ex);
 			return "error";
