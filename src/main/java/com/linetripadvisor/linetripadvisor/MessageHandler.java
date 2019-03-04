@@ -25,6 +25,8 @@ import com.linecorp.bot.model.response.BotApiResponse;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 
+import service.ContentService;
+
 @SpringBootApplication
 @EnableAutoConfiguration
 @ComponentScan
@@ -35,6 +37,8 @@ public class MessageHandler {
     private LineMessagingClient lineMessagingClient;
 	@Autowired
 	ResourceLoader resourceLoader;
+	@Autowired
+	ContentService contentService;
 	
 	final String COUNTRY_INFO = "./static/country.json";
 	//テキストメッセージがきた時に呼ばれるよ
@@ -52,8 +56,11 @@ public class MessageHandler {
     @EventMapping
     public TextMessage handleImageMessageEvent(MessageEvent<ImageMessageContent>event) {
     	Object receiveImage = event.getSource();
+    	Object test = event.getMessage();
     	System.out.println("ここだよ");
     	System.out.println(event);
+    	System.out.println(receiveImage);
+    	System.out.println(test);
 //    	InputStream responseInputStream = event.getStream();
 //    	InputStream is = getContentStream(event.getMessage());
 //    	MessageContentResponse messageContentResponse = lineMessagingClient.getMessageContent(messageId).get();
