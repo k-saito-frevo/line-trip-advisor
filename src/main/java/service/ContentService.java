@@ -11,7 +11,7 @@ public class ContentService {
 	
 	public String getContent(String messageId) {
 		try {
-			final String uri = " https://api.line.me/v2/bot/message/" + messageId + "/content";
+			final String uri = "https://api.line.me/v2/bot/message/" + messageId + "/content";
 			System.out.println("ここに投げるよ");
 			System.out.println(uri);
 
