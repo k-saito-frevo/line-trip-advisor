@@ -54,11 +54,14 @@ public class MessageHandler {
     @EventMapping
     public TextMessage handleImageMessageEvent(MessageEvent<ImageMessageContent>event) {
     	Object receiveImage = event.getSource();
-    	Object test = event.getMessage();
+    	String messageId = event.getMessage().getId();
     	System.out.println("ここだよ");
     	System.out.println(event);
     	System.out.println(receiveImage);
-    	System.out.println(test);
+    	ContentService contentService = new ContentService();
+    	String resOfId = contentService.getContent(messageId);
+    	System.out.println("かえってきた！");
+    	System.out.println(resOfId);
 //    	InputStream responseInputStream = event.getStream();
 //    	InputStream is = getContentStream(event.getMessage());
 //    	MessageContentResponse messageContentResponse = lineMessagingClient.getMessageContent(messageId).get();
