@@ -2,10 +2,12 @@ package com.linetripadvisor.linetripadvisor;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -59,7 +61,10 @@ public class MessageHandler {
     	System.out.println("ここだよ");
     	ContentService contentService = new ContentService();
     	String imgSrc = contentService.getContent(messageId);
-    	System.out.println(Base64.isBase64(imgSrc));
+        //エンコード前にバイト配列に置き換える際のCharset
+        Charset charset = StandardCharsets.UTF_8;
+        String result = Base64.getEncoder().encodeToString(imgSrc.getBytes(charset)); 
+    	System.out.println(result);
     	FaceRecognizeService faceRecognizeService = new FaceRecognizeService();
 //    	String result = faceRecognizeService.tryPost(imgSrc);
 //    	System.out.println("かえってきた！");
