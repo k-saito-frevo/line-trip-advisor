@@ -21,7 +21,7 @@ public class ContentService {
 			HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(body, headers);
 			
 			ResponseEntity<String> result = restTemplate.exchange(uri, HttpMethod.GET, request,String.class);
-			System.out.println(result.getBody());
+			//System.out.println(result.getBody());
 			return result.getBody();	
 		}catch(Exception ex) {
 			System.out.println(ex);

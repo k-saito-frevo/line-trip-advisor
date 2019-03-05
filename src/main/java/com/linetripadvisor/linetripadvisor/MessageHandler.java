@@ -66,9 +66,9 @@ public class MessageHandler {
         String result = Base64.getEncoder().encodeToString(imgSrc.getBytes(charset)); 
     	System.out.println(result);
     	FaceRecognizeService faceRecognizeService = new FaceRecognizeService();
-//    	String result = faceRecognizeService.tryPost(imgSrc);
-//    	System.out.println("かえってきた！");
-//    	System.out.println(result);
+    	String result = faceRecognizeService.tryPost(imgSrc);
+    	System.out.println("かえってきた！");
+    	System.out.println(result);
 //    	InputStream responseInputStream = event.getStream();
 //    	InputStream is = getContentStream(event.getMessage());
 //    	MessageContentResponse messageContentResponse = lineMessagingClient.getMessageContent(messageId).get();
