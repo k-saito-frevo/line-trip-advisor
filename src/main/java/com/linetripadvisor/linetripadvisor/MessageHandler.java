@@ -8,6 +8,7 @@ import java.util.Base64;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -60,10 +61,11 @@ public class MessageHandler {
     	String messageId = event.getMessage().getId();
     	System.out.println("ここだよ");
     	ContentService contentService = new ContentService();
-    	String imgSrc = contentService.getContent(messageId);
+    	InputStream imgSrc = (InputStream) contentService.getContent(messageId);
         //エンコード前にバイト配列に置き換える際のCharset
         Charset charset = StandardCharsets.UTF_8;
-        String encodeResult = Base64.getEncoder().encodeToString(imgSrc.getBytes(charset)); 
+        //String theString = imgSrc.toString(); 
+        String encodeResult = Base64.getEncoder().encodeToString(imgSrc.toString().getBytes(charset)); 
     	System.out.println(encodeResult);
     	FaceRecognizeService faceRecognizeService = new FaceRecognizeService();
     	String result = faceRecognizeService.tryPost("data:image/png;base64,"+ encodeResult);

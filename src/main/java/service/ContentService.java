@@ -1,5 +1,7 @@
 package service;
 
+import java.io.InputStream;
+
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -11,7 +13,7 @@ import org.springframework.web.client.RestTemplate;
 
 public class ContentService {
 	
-	public String getContent(String messageId) {
+	public Object getContent(String messageId) {
 		try {
 			final String uri = "https://api.line.me/v2/bot/message/" + messageId + "/content";
 			RestTemplate restTemplate = new RestTemplate();
