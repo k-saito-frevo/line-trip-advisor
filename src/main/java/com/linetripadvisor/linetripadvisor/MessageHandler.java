@@ -66,11 +66,11 @@ public class MessageHandler {
         Charset charset = StandardCharsets.UTF_8;
         //String theString = imgSrc.toString(); 
         String encodeResult = Base64.getEncoder().encodeToString(imgSrc.toString().getBytes(charset)); 
-    	System.out.println(encodeResult);
+    	System.out.print(encodeResult);
     	FaceRecognizeService faceRecognizeService = new FaceRecognizeService();
     	String result = faceRecognizeService.tryPost("data:image/png;base64,"+ encodeResult);
     	System.out.println("かえってきた！");
-    	System.out.println(result);
+    	System.out.print(result);
 //    	InputStream responseInputStream = event.getStream();
 //    	InputStream is = getContentStream(event.getMessage());
 //    	MessageContentResponse messageContentResponse = lineMessagingClient.getMessageContent(messageId).get();
