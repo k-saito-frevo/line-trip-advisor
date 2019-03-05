@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -54,14 +55,11 @@ public class MessageHandler {
     //イメージファイルがきた時に呼ばれるよ
     @EventMapping
     public TextMessage handleImageMessageEvent(MessageEvent<ImageMessageContent>event) {
-    	Object receiveImage = event.getSource();
     	String messageId = event.getMessage().getId();
     	System.out.println("ここだよ");
-    	System.out.println(event);
-    	System.out.println(receiveImage);
     	ContentService contentService = new ContentService();
-    	Object imgSrc = contentService.getContent(messageId);
-    	System.out.println(imgSrc);
+    	String imgSrc = contentService.getContent(messageId);
+    	System.out.println(Base64.isBase64(imgSrc));
     	FaceRecognizeService faceRecognizeService = new FaceRecognizeService();
 //    	String result = faceRecognizeService.tryPost(imgSrc);
 //    	System.out.println("かえってきた！");
