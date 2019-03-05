@@ -63,10 +63,10 @@ public class MessageHandler {
     	String imgSrc = contentService.getContent(messageId);
         //エンコード前にバイト配列に置き換える際のCharset
         Charset charset = StandardCharsets.UTF_8;
-        String result = Base64.getEncoder().encodeToString(imgSrc.getBytes(charset)); 
-    	System.out.println(result);
+        String encodeResult = Base64.getEncoder().encodeToString(imgSrc.getBytes(charset)); 
+    	System.out.println(encodeResult);
     	FaceRecognizeService faceRecognizeService = new FaceRecognizeService();
-    	String result = faceRecognizeService.tryPost(imgSrc);
+    	String result = faceRecognizeService.tryPost(encodeResult);
     	System.out.println("かえってきた！");
     	System.out.println(result);
 //    	InputStream responseInputStream = event.getStream();
