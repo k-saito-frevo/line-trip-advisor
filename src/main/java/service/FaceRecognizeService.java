@@ -19,15 +19,15 @@ import org.springframework.web.client.RestTemplate;
 	public class FaceRecognizeService {
 
 		public String tryPost(@RequestBody(required=false) String imgSrc) {
-			System.out.println("顔認証にきてるよ");
 			try {
 				//final String uri = "https://api-us.faceplusplus.com/facepp/v3/detect?api_key=jpY1EEucLMZmcfmNKHNbHoiLoGpOEAJ7&api_secret=_cCinbAjgxewP8fQRyTARbFh66t53Y6h&image_base64=" + imgSrc +"&return_landmark=1";
 				final String uri = "https://api-us.faceplusplus.com/facepp/v3/detect";
 				RestTemplate restTemplate = new RestTemplate();
+				System.out.println("テスト");
+				System.out.print(imgSrc);
 				//String param64 = imgSrc.replace("data%3Aimage%2Fpng%3Bbase64%2C","data:image/png;base64,");
 				//param64 = param64.replaceAll("%2F", "/");
 				//System.out.println(param64);
-				System.out.println("テスト");
 				HttpHeaders headers = new HttpHeaders();
 				headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
