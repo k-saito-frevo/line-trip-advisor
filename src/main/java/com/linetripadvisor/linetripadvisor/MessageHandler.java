@@ -60,11 +60,12 @@ public class MessageHandler {
     	System.out.println(event);
     	System.out.println(receiveImage);
     	ContentService contentService = new ContentService();
-    	String imgSrc = contentService.getContent(messageId);
+    	Object imgSrc = contentService.getContent(messageId);
+    	System.out.println(imgSrc);
     	FaceRecognizeService faceRecognizeService = new FaceRecognizeService();
-    	String result = faceRecognizeService.tryPost(imgSrc);
-    	System.out.println("かえってきた！");
-    	System.out.println(result);
+//    	String result = faceRecognizeService.tryPost(imgSrc);
+//    	System.out.println("かえってきた！");
+//    	System.out.println(result);
 //    	InputStream responseInputStream = event.getStream();
 //    	InputStream is = getContentStream(event.getMessage());
 //    	MessageContentResponse messageContentResponse = lineMessagingClient.getMessageContent(messageId).get();
