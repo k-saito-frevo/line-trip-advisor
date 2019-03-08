@@ -1,6 +1,18 @@
 package service;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Iterator;
+
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -30,4 +42,27 @@ public class ContentService {
 			return "error";
 		}
 	}
-}
+	 public void writeOutputStream(byte[] byteArray) throws IOException {
+			OutputStream os = new FileOutputStream("./test.jpg");
+
+	        ByteArrayInputStream imageInput = new ByteArrayInputStream(byteArray);
+	        BufferedImage buffer = ImageIO.read(imageInput);
+
+	        ImageWriter writer = null;
+	        Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName("jpg");
+	        if (iter.hasNext()) {
+	            writer = iter.next();
+	        }
+
+	        ImageWriteParam param = writer.getDefaultWriteParam();
+	        if (param.canWriteCompressed()) {
+	            param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+	            param.setCompressionQuality(0.5f);
+	        }
+
+	        ImageOutputStream ios = ImageIO.createImageOutputStream(os);
+	        writer.setOutput(ios);
+	        IIOImage iioImage = new IIOImage(buffer, null, null);
+	        writer.write(null, iioImage, param);
+	    }
+	 }
