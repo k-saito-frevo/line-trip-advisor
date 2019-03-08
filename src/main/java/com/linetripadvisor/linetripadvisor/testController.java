@@ -43,7 +43,6 @@ public class testController {
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(body, headers);
 		
 		ResponseEntity<String> result = restTemplate.exchange("https://api.line.me/v2/bot/message/9458774991876/content", HttpMethod.GET, request,String.class);
-
 		//バイナリーで取得
 		byte[] bytes = result.getBody().getBytes();
 		FileOutputStream out = new FileOutputStream("./binary.jpg");
