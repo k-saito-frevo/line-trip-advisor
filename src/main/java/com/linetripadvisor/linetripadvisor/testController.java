@@ -45,7 +45,7 @@ public class testController {
 		ResponseEntity<String> result = restTemplate.exchange("https://api.line.me/v2/bot/message/9458774991876/content", HttpMethod.GET, request,String.class);
 		//バイナリーで取得
 		byte[] bytes = result.getBody().getBytes();
-		FileOutputStream out = new FileOutputStream("./binary.jpg");
+		FileOutputStream out = new FileOutputStream("./binary.txt");
 		for (int i = 0 ; i<bytes.length;i++) {
 			out.write(bytes[i]);
 		}
@@ -54,7 +54,7 @@ public class testController {
 
 		//base64で取得
 		byte[] encoded = Base64.encodeBase64(result.getBody().getBytes());
-		FileOutputStream out2 = new FileOutputStream("./base64.jpg");
+		FileOutputStream out2 = new FileOutputStream("./base64.txt");
 		for (int i = 0 ; i<encoded.length;i++) {
 			out2.write(encoded[i]);
 		}
@@ -62,7 +62,7 @@ public class testController {
 		out2.close();
 		
 		//FileWriter file = new FileWriter("./reuslt.jpg");
-		File file = new File("./result.jpg");
+		File file = new File("./rawString.txt");
 		PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file),"ISO2022JP")));
 		String tetetete = result.getBody();
 		pw.println(tetetete);
