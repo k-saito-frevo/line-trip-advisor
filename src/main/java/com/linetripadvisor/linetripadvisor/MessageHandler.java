@@ -61,7 +61,7 @@ public class MessageHandler {
     	String messageId = event.getMessage().getId();
     	System.out.println("ここだよ");
     	ContentService contentService = new ContentService();
-    	InputStream imgSrc = (InputStream) contentService.getContent(messageId);
+    	String imgSrc = contentService.getContent(messageId);
         //エンコード前にバイト配列に置き換える際のCharset
         Charset charset = StandardCharsets.UTF_8;
         //String theString = imgSrc.toString(); 

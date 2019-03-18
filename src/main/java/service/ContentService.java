@@ -25,7 +25,7 @@ import org.springframework.web.client.RestTemplate;
 
 public class ContentService {
 	
-	public Object getContent(String messageId) {
+	public String getContent(String messageId) {
 		try {
 			final String uri = "https://api.line.me/v2/bot/message/" + messageId + "/content";
 			RestTemplate restTemplate = new RestTemplate();
