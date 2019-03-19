@@ -60,6 +60,7 @@ public class MessageHandler {
     public TextMessage handleImageMessageEvent(MessageEvent<ImageMessageContent>event) {
     	String messageId = event.getMessage().getId();
     	System.out.println("ここだよ");
+    	System.out.println(messageId);
     	ContentService contentService = new ContentService();
     	String imgSrc = contentService.getContent(messageId);
         //エンコード前にバイト配列に置き換える際のCharset
