@@ -78,7 +78,7 @@ public class MessageHandler {
 		String jpegTarget = "./line-test" + sdf.format(date).toString() + ".jpg";
     	//コンテンツを取得
     	String imgStr = contentService.getContent(messageId,jpegTarget);
-    	
+    	if(imgStr.isEmpty() || imgStr == null) return new TextMessage("エラーです");
     	//顔認証取得
     	FaceRecognizeService faceRecognizeService = new FaceRecognizeService();
     	String result = faceRecognizeService.tryPost(imgStr);
@@ -89,7 +89,10 @@ public class MessageHandler {
 		FileSystem fs = FileSystems.getDefault();
 		Path path = (fs.getPath(jpegTarget));
 		Files.delete(path);
-		
+		System.out.println(face.image_id);
+		System.out.println(face.request_id);
+		System.out.println(face.time_used);
+		System.out.println(face.faces);
 		if(face.faces.length<1) {
 			return new TextMessage("顔が検出されません");
 		}
