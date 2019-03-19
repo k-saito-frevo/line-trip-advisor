@@ -2,9 +2,19 @@ package com.linetripadvisor.linetripadvisor;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.text.SimpleDateFormat;
+import java.util.Base64;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 import javax.imageio.ImageIO;
@@ -20,8 +30,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.client.MessageContentResponse;
+
+import model.Face;
+import service.FaceRecognizeService;
 
 @RestController
 @CrossOrigin
@@ -29,40 +43,39 @@ public class testController {
 	
 	@GetMapping("test")
 	public void test() throws IOException{
-		System.out.println("てすと〜");
-		RestTemplate restTemplate = new RestTemplate();
-		HttpHeaders headers = new HttpHeaders();			
-		headers.add("Authorization", "Bearer " + "ZWAMZw1b9/qepYdvDh38XrUjVpqL8B4lxrdibQN7lKXc4BY6/svwnG36pHFUvp422mZrjbkMQBVOAS6UFSP4GWirjF83glbh3VzuDjItXKdrgUv9YrDJemoyD6g78aGpi+/QmNOPUhf2l+t16kQtUQdB04t89/1O/w1cDnyilFU=");
-		MultiValueMap<String, String> body= new LinkedMultiValueMap<String, String>();
-		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(body, headers);
-		
-		ResponseEntity<String> result = restTemplate.exchange("https://api.line.me/v2/bot/message/9458774991876/content", HttpMethod.GET, request,String.class);
-		//バイナリーで取得
-		byte[] bytes = result.getBody().getBytes();
-		FileOutputStream out = new FileOutputStream("./binary.txt");
-		for (int i = 0 ; i<bytes.length;i++) {
-			out.write(bytes[i]);
-		}
-		out.flush();
-		out.close();
-		System.out.println("第一陣きてる");
 		final LineMessagingClient client = LineMessagingClient.builder("ZWAMZw1b9/qepYdvDh38XrUjVpqL8B4lxrdibQN7lKXc4BY6/svwnG36pHFUvp422mZrjbkMQBVOAS6UFSP4GWirjF83glbh3VzuDjItXKdrgUv9YrDJemoyD6g78aGpi+/QmNOPUhf2l+t16kQtUQdB04t89/1O/w1cDnyilFU=").build();
 		final MessageContentResponse messageContentResponse;
 		try {
-			System.out.println("第二陣きてる");
-		    messageContentResponse = client.getMessageContent("9458774991876").get();
+		    messageContentResponse = client.getMessageContent("9539237466637").get();
 		} catch (InterruptedException | ExecutionException e) {
-			System.out.println("エラーきてる");
 		    System.out.println(e);
 		    return;
 		}
-		System.out.println("第３陣きてる");
-		System.out.println(messageContentResponse.getStream());
-		System.out.println("第二陣きてる");
-		FileOutputStream outer = new FileOutputStream("./ttt.jpg");
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        
+		String jpegTarget = "./line-test" + sdf.format(date).toString() + ".jpg";
+
+		FileOutputStream outer = new FileOutputStream(jpegTarget);
+		int data;
+	     while ((data = messageContentResponse.getStream().read()) != -1) {
+	       outer.write((byte) data);
+	     }
 		outer.flush();
 		outer.close();
-		Files.copy(messageContentResponse.getStream(),Files.createTempFile("copyTest", "jpg"));
+		FileSystem fs = FileSystems.getDefault();
+		Path path = (fs.getPath(jpegTarget));
+		String testString =  "data:image/jpg;base64," + Base64.getEncoder().encodeToString((Files.readAllBytes(path)));
+    	FaceRecognizeService faceRecognizeService = new FaceRecognizeService();
+    	String result = faceRecognizeService.tryPost(testString);
+    	System.out.println(result);
+		Files.delete(path);
+		ObjectMapper mapper = new ObjectMapper();
+		Face face = mapper.readValue(result, Face.class);
+		if(face.faces.length<1) {
+			//return ""
+		}
+		System.out.println(face);
 		}
 	
 	@GetMapping("just/doit")
@@ -100,7 +113,7 @@ public class testController {
 		FileOutputStream outer = new FileOutputStream("./ttt.jpg");
 		outer.flush();
 		outer.close();
-		Files.copy(messageContentResponse.getStream(),Files.createTempFile("copyTest", "jpg"));
+		Files.copy(messageContentResponse.getStream(),Files.createTempFile("copyTest", ".jpg"));
 		//base64で取得
 //		String base64String = Base64.encodeBase64(result.getBody().getBytes());
 //        String[] strings = base64String.split(",");
@@ -155,24 +168,6 @@ public class testController {
 //	    ByteArrayInputStream bis = new ByteArrayInputStream(data);
 //	    BufferedImage bImage2 = ImageIO.read(bis);
 //	    ImageIO.write(bImage2, "jpg", new File("output.jpg") );
-//	    System.out.println("image created");
-		
-	}
-	public static BufferedImage toBufferedImage(byte[] imageBinary) throws IOException{
-		   BufferedImage img = ImageIO.read(new ByteArrayInputStream(imageBinary));
-		   int width = img.getWidth();
-		   int height = img.getHeight();
-		   BufferedImage bufImage = new BufferedImage(img.getWidth(), height, BufferedImage.TYPE_INT_RGB);
-		   for(int y = 0; y < height; y++){
-		      for(int x = 0 ; x < width; x++){
-		         int c = img.getRGB(x, y);
-		         int r = c >> 16 & 0xff;
-		         int g = c >> 8 & 0xff;
-		         int b = c & 0xff;
-		         int rgb = 0xff000000 | r << 16 | g << 8 | b;
-		         bufImage.setRGB(x, y, rgb);
-		      }
-		   }
-		   return bufImage;
+//	    System.out.println("image created");	
 	}
 }

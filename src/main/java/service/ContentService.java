@@ -2,11 +2,20 @@ package service;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.text.SimpleDateFormat;
+import java.util.Base64;
+import java.util.Date;
 import java.util.Iterator;
+import java.util.concurrent.ExecutionException;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -23,24 +32,33 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import com.linecorp.bot.client.LineMessagingClient;
+import com.linecorp.bot.client.MessageContentResponse;
+
 public class ContentService {
 	
-	public String getContent(String messageId) {
+	public  String getContent(String messageId,String jpegTarget) throws FileNotFoundException {
 		try {
-			final String uri = "https://api.line.me/v2/bot/message/" + messageId + "/content";
-			RestTemplate restTemplate = new RestTemplate();
-			HttpHeaders headers = new HttpHeaders();			
-			headers.add("Authorization", "Bearer " + "ZWAMZw1b9/qepYdvDh38XrUjVpqL8B4lxrdibQN7lKXc4BY6/svwnG36pHFUvp422mZrjbkMQBVOAS6UFSP4GWirjF83glbh3VzuDjItXKdrgUv9YrDJemoyD6g78aGpi+/QmNOPUhf2l+t16kQtUQdB04t89/1O/w1cDnyilFU=");
-			MultiValueMap<String, String> body= new LinkedMultiValueMap<String, String>();
-			HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(body, headers);
-			
-			ResponseEntity<String> result = restTemplate.exchange(uri, HttpMethod.GET, request,String.class);
-			//System.out.println(result.getBody());
-			return result.getBody();	
-		}catch(Exception ex) {
-			System.out.println(ex);
-			return "error";
+			final LineMessagingClient client = LineMessagingClient.builder("ZWAMZw1b9/qepYdvDh38XrUjVpqL8B4lxrdibQN7lKXc4BY6/svwnG36pHFUvp422mZrjbkMQBVOAS6UFSP4GWirjF83glbh3VzuDjItXKdrgUv9YrDJemoyD6g78aGpi+/QmNOPUhf2l+t16kQtUQdB04t89/1O/w1cDnyilFU=").build();
+			MessageContentResponse messageContentResponse = client.getMessageContent("9539237466637").get();        
+			FileOutputStream outer = new FileOutputStream(jpegTarget);
+			int data;
+			//ファイル書き込み
+			while (( data = messageContentResponse.getStream().read()) != -1) {
+				outer.write((byte) data);
+			}
+			outer.flush();
+			outer.close();
+			FileSystem fs = FileSystems.getDefault();
+			Path path = (fs.getPath(jpegTarget));
+			return "data:image/jpg;base64," + Base64.getEncoder().encodeToString((Files.readAllBytes(path)));
+		}catch (Exception e) {
+			System.out.println(e);
+			return null;
 		}
+	}
+	public Path delJpeg(Path input) {
+		return null;
 	}
 	 public void writeOutputStream(byte[] byteArray) throws IOException {
 			OutputStream os = new FileOutputStream("./test.jpg");

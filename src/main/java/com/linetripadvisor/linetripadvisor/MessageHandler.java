@@ -1,10 +1,18 @@
 package com.linetripadvisor.linetripadvisor;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.text.SimpleDateFormat;
 import java.util.Base64;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
@@ -17,6 +25,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.client.MessageContentResponse;
 import com.linecorp.bot.model.ReplyMessage;
@@ -29,6 +40,7 @@ import com.linecorp.bot.model.response.BotApiResponse;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 
+import model.Face;
 import service.ContentService;
 import service.FaceRecognizeService;
 
@@ -57,29 +69,32 @@ public class MessageHandler {
     
     //イメージファイルがきた時に呼ばれるよ
     @EventMapping
-    public TextMessage handleImageMessageEvent(MessageEvent<ImageMessageContent>event) {
+    public TextMessage handleImageMessageEvent(MessageEvent<ImageMessageContent>event) throws JsonParseException, JsonMappingException, IOException {
     	String messageId = event.getMessage().getId();
-    	System.out.println("ここだよ");
-    	System.out.println(messageId);
+    	System.out.println("メッセージID:" + messageId);
     	ContentService contentService = new ContentService();
-    	String imgSrc = contentService.getContent(messageId);
-        //エンコード前にバイト配列に置き換える際のCharset
-        Charset charset = StandardCharsets.UTF_8;
-        //String theString = imgSrc.toString(); 
-        String encodeResult = Base64.getEncoder().encodeToString(imgSrc.toString().getBytes(charset)); 
-    	System.out.print(encodeResult);
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");        
+		String jpegTarget = "./line-test" + sdf.format(date).toString() + ".jpg";
+    	//コンテンツを取得
+    	String imgStr = contentService.getContent(messageId,jpegTarget);
+    	
+    	//顔認証取得
     	FaceRecognizeService faceRecognizeService = new FaceRecognizeService();
-    	String result = faceRecognizeService.tryPost("data:image/png;base64,"+ encodeResult);
-    	System.out.println("かえってきた！");
-    	System.out.print(result);
-//    	InputStream responseInputStream = event.getStream();
-//    	InputStream is = getContentStream(event.getMessage());
-//    	MessageContentResponse messageContentResponse = lineMessagingClient.getMessageContent(messageId).get();
-//    	handleContent(
-//                event.getMessage().getId(),
-//                messageContentResponse -> replyMessage(messageContentResponse, event.getReplyToken()));
-//    	BotApiResponse response = replyMessageHandler.reply(event);
-    	return new TextMessage("お返ししま〜す");
+    	String result = faceRecognizeService.tryPost(imgStr);
+		ObjectMapper mapper = new ObjectMapper();
+		Face face = mapper.readValue(result, Face.class);
+
+		//ファイル削除
+		FileSystem fs = FileSystems.getDefault();
+		Path path = (fs.getPath(jpegTarget));
+		Files.delete(path);
+		
+		if(face.faces.length<1) {
+			return new TextMessage("顔が検出されません");
+		}
+		System.out.println(face);
+    	return new TextMessage(result);
     }
     //それ以外
     @EventMapping
