@@ -15,6 +15,8 @@ import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import javax.imageio.ImageIO;
@@ -30,11 +32,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.client.MessageContentResponse;
 
 import model.Face;
+import model.FaceDetail;
 import service.FaceRecognizeService;
 
 @RestController
@@ -43,40 +47,73 @@ public class testController {
 	
 	@GetMapping("test")
 	public void test() throws IOException{
-		final LineMessagingClient client = LineMessagingClient.builder("ZWAMZw1b9/qepYdvDh38XrUjVpqL8B4lxrdibQN7lKXc4BY6/svwnG36pHFUvp422mZrjbkMQBVOAS6UFSP4GWirjF83glbh3VzuDjItXKdrgUv9YrDJemoyD6g78aGpi+/QmNOPUhf2l+t16kQtUQdB04t89/1O/w1cDnyilFU=").build();
-		final MessageContentResponse messageContentResponse;
 		try {
-		    messageContentResponse = client.getMessageContent("9539237466637").get();
-		} catch (InterruptedException | ExecutionException e) {
-		    System.out.println(e);
-		    return;
-		}
-		Date date = new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-        
-		String jpegTarget = "./line-test" + sdf.format(date).toString() + ".jpg";
-
-		FileOutputStream outer = new FileOutputStream(jpegTarget);
-		int data;
-	     while ((data = messageContentResponse.getStream().read()) != -1) {
-	       outer.write((byte) data);
-	     }
-		outer.flush();
-		outer.close();
-		FileSystem fs = FileSystems.getDefault();
-		Path path = (fs.getPath(jpegTarget));
-		String testString =  "data:image/jpg;base64," + Base64.getEncoder().encodeToString((Files.readAllBytes(path)));
-    	FaceRecognizeService faceRecognizeService = new FaceRecognizeService();
-    	String result = faceRecognizeService.tryPost(testString);
-    	System.out.println(result);
-		Files.delete(path);
+			
+//		final LineMessagingClient client = LineMessagingClient.builder("ZWAMZw1b9/qepYdvDh38XrUjVpqL8B4lxrdibQN7lKXc4BY6/svwnG36pHFUvp422mZrjbkMQBVOAS6UFSP4GWirjF83glbh3VzuDjItXKdrgUv9YrDJemoyD6g78aGpi+/QmNOPUhf2l+t16kQtUQdB04t89/1O/w1cDnyilFU=").build();
+//		final MessageContentResponse messageContentResponse;
+//		messageContentResponse = client.getMessageContent("9540504294177").get();
+//		Date date = new Date();
+//		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+//        
+//		String jpegTarget = "./line-test" + sdf.format(date).toString() + ".jpg";
+//
+//		FileOutputStream outer = new FileOutputStream(jpegTarget);
+//		int data;
+//	     while ((data = messageContentResponse.getStream().read()) != -1) {
+//	       outer.write((byte) data);
+//	    }
+//		outer.flush();
+//		outer.close();
+//		FileSystem fs = FileSystems.getDefault();
+//		Path path = (fs.getPath(jpegTarget));
+//		String testString =  "data:image/jpg;base64," + Base64.getEncoder().encodeToString((Files.readAllBytes(path)));
+//    	FaceRecognizeService faceRecognizeService = new FaceRecognizeService();
+//    	String result = faceRecognizeService.tryPost(testString);
+//		Files.delete(path);
+//		System.out.println(result);
+		FileSystem testFs = FileSystems.getDefault();
+		Path pathJson = testFs.getPath("./test.json");
+		List<String> result = Files.readAllLines(pathJson);
 		ObjectMapper mapper = new ObjectMapper();
-		Face face = mapper.readValue(result, Face.class);
-		if(face.faces.length<1) {
-			//return ""
+		try {
+			JsonNode node = mapper.readTree(result.get(0));
+			System.out.println("ここまできてる");
+			System.out.println(node);
+			System.out.println(node.get("image_id"));
+			System.out.println(node.get("request_id"));
+			System.out.println(node.get("time_used"));
+			System.out.println("ここまできてる");
+		} catch (IOException e) {
+			System.out.println("Welcome　to Error");
+			e.printStackTrace();
 		}
-		System.out.println(face);
+		
+		Face face = mapper.readValue(result.get(0), Face.class);
+		if(face.faces.size()>0) {
+			face.faces.forEach(fc -> {
+				FaceDetail fd = fc;
+				System.out.println("取得するよ");
+				System.out.println(fd.getAttributes().keySet());
+				fd.getAttributes().keySet().forEach(target ->{
+					System.out.println("ここ");
+					System.out.println(fd.getAttributes().get(target));
+					System.out.println(fd.getAttributes().get(target).emotion);
+					System.out.println(fd.getAttributes().get(target).age);
+					System.out.println(fd.getAttributes().get(target).beauty);
+					System.out.println(fd.getAttributes().get(target).gender);
+				});
+				System.out.println(fd.getAttributes().get("emotion").getEmotion());
+				System.out.println(fd.getAttributes().get("emotion").getEmotion().keySet());
+				System.out.println(fd.getAttributes().get("age").getAge().get("value"));
+				System.out.println(fd.getAttributes().get("gender").getGender().get(("value")));
+			});
+			System.out.println("あるよ！");
 		}
+		}catch(Exception ex) {
+			System.out.print("エラー");
+			System.out.print(ex);
+		}
+	}
 	
 	@GetMapping("just/doit")
 	public void doit() throws IOException {

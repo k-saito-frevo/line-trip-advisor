@@ -93,7 +93,7 @@ public class MessageHandler {
 		System.out.println(face.request_id);
 		System.out.println(face.time_used);
 		System.out.println(face.faces);
-		if(face.faces.length<1) {
+		if(face.faces.size()<1) {
 			return new TextMessage("顔が検出されません");
 		}
 		System.out.println(face);
