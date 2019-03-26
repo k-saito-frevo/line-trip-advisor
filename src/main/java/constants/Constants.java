@@ -1,7 +1,5 @@
 package constants;
 
-import java.util.List;
-
 public class Constants {
 	//旅行先
 	//ネイチャー
