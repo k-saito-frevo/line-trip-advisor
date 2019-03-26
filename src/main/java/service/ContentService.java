@@ -60,6 +60,7 @@ public class ContentService {
 	public Path delJpeg(Path input) {
 		return null;
 	}
+	
 	 public void writeOutputStream(byte[] byteArray) throws IOException {
 			OutputStream os = new FileOutputStream("./test.jpg");
 

@@ -1,21 +1,24 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.Getter;
 
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class Emotion {
 	public Emotion() {}
 	@Getter
-	public int sadness;
+	public float sadness;
 	@Getter
-	public int neutral;
+	public float neutral;
 	@Getter
-	public int disgust;
+	public float disgust;
 	@Getter
-	public int anger;
+	public float anger;
 	@Getter
-	public int surprise;
+	public float surprise;
 	@Getter
-	public int fear;
+	public float fear;
 	@Getter
-	public int happiness;
+	public float happiness;
 }

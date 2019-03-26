@@ -12,9 +12,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.sql.Array;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -37,6 +42,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.client.MessageContentResponse;
 
+import constants.Constants;
 import model.Face;
 import model.FaceDetail;
 import service.FaceRecognizeService;
@@ -47,8 +53,7 @@ public class testController {
 	
 	@GetMapping("test")
 	public void test() throws IOException{
-		try {
-			
+		try {			
 //		final LineMessagingClient client = LineMessagingClient.builder("ZWAMZw1b9/qepYdvDh38XrUjVpqL8B4lxrdibQN7lKXc4BY6/svwnG36pHFUvp422mZrjbkMQBVOAS6UFSP4GWirjF83glbh3VzuDjItXKdrgUv9YrDJemoyD6g78aGpi+/QmNOPUhf2l+t16kQtUQdB04t89/1O/w1cDnyilFU=").build();
 //		final MessageContentResponse messageContentResponse;
 //		messageContentResponse = client.getMessageContent("9540504294177").get();
@@ -71,49 +76,188 @@ public class testController {
 //    	String result = faceRecognizeService.tryPost(testString);
 //		Files.delete(path);
 //		System.out.println(result);
-		FileSystem testFs = FileSystems.getDefault();
-		Path pathJson = testFs.getPath("./test.json");
-		List<String> result = Files.readAllLines(pathJson);
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			JsonNode node = mapper.readTree(result.get(0));
-			System.out.println("ここまできてる");
-			System.out.println(node);
-			System.out.println(node.get("image_id"));
-			System.out.println(node.get("request_id"));
-			System.out.println(node.get("time_used"));
-			System.out.println("ここまできてる");
-		} catch (IOException e) {
-			System.out.println("Welcome　to Error");
-			e.printStackTrace();
-		}
-		
-		Face face = mapper.readValue(result.get(0), Face.class);
-		if(face.faces.size()>0) {
-			face.faces.forEach(fc -> {
-				FaceDetail fd = fc;
-				System.out.println("取得するよ");
-				System.out.println(fd.getAttributes().keySet());
-				fd.getAttributes().keySet().forEach(target ->{
-					System.out.println("ここ");
-					System.out.println(fd.getAttributes().get(target));
-					System.out.println(fd.getAttributes().get(target).emotion);
-					System.out.println(fd.getAttributes().get(target).age);
-					System.out.println(fd.getAttributes().get(target).beauty);
-					System.out.println(fd.getAttributes().get(target).gender);
+			FileSystem testFs = FileSystems.getDefault();
+			Path pathJson = testFs.getPath("./test.json");
+			List<String> result = Files.readAllLines(pathJson);
+			ObjectMapper mapper = new ObjectMapper();
+			try {
+				JsonNode node = mapper.readTree(result.get(0));
+				System.out.println("ここまできてる");
+				System.out.println(node);
+				System.out.println(node.get("image_id"));
+				System.out.println(node.get("request_id"));
+				System.out.println(node.get("time_used"));
+				System.out.println("ここまできてる");
+			} catch (IOException e) {
+				System.out.println("Welcome　to Error");
+				e.printStackTrace();
+			}
+			
+			Face face = mapper.readValue(result.get(0), Face.class);
+			List<Float> rankingArr = new ArrayList<Float>();
+			Map<Float,String> emotionMap = new HashMap<>();
+			
+			if(face.faces.size()>0) {
+				face.faces.forEach(fc -> {
+					float nature = 0,treasure=0,historical=0,resort=0,city=0,age = 0;
+					FaceDetail fd = fc;
+					//性別
+					if(fd.getAttributes().getGender().getValue().toString().equals(Constants.MALE)) {
+						nature += Constants.FEMALE_NATURE;
+						treasure += Constants.FEMALE_TREASURE;
+						historical += Constants.FEMALE_HISTORICAL;
+						resort += Constants.FEMALE_RESORT;
+						city += Constants.FEMALE_CITY;						
+					}else {
+						nature += Constants.MALE_NATURE;
+						treasure += Constants.MALE_TREASURE;
+						historical += Constants.MALE_HISTORICAL;
+						resort += Constants.MALE_RESORT;
+						city += Constants.MALE_CITY;						
+					}
+					//年齢
+					if( Integer.parseInt(fd.getAttributes().getAge().getValue().toString())>55) {
+							nature += Constants.OLDEST_NATURE;
+							treasure += Constants.OLDEST_TREASURE;
+							historical += Constants.OLDEST_HISTORICAL;
+							resort += Constants.OLDEST_RESORT;
+							city += Constants.OLDEST_CITY;
+					}else if( Integer.parseInt(fd.getAttributes().getAge().getValue().toString())>32) {
+						nature += Constants.OLDER_NATURE;
+						treasure += Constants.OLDER_TREASURE;
+						historical += Constants.OLDER_HISTORICAL;
+						resort += Constants.OLDER_RESORT;
+						city += Constants.OLDER_CITY;
+					}else if( Integer.parseInt(fd.getAttributes().getAge().getValue().toString())>22) {
+						nature += Constants.YOUNGER_NATURE;
+						treasure += Constants.YOUNGER_TREASURE;
+						historical += Constants.YOUNGER_HISTORICAL;
+						resort += Constants.YOUNGER_RESORT;
+						city += Constants.YOUNGER_CITY;
+					}else{
+						nature += Constants.YOUNGEST_NATURE;
+						treasure += Constants.YOUNGEST_TREASURE;
+						historical += Constants.YOUNGEST_HISTORICAL;
+						resort += Constants.YOUNGEST_RESORT;
+						city += Constants.YOUNGEST_CITY;
+					}
+					rankingArr.add(fd.getAttributes().getEmotion().getSadness());
+					emotionMap.put(fd.getAttributes().getEmotion().getSadness(),"saddness");
+					rankingArr.add(fd.getAttributes().getEmotion().getNeutral());
+					emotionMap.put(fd.getAttributes().getEmotion().getNeutral(),"neutral");
+					rankingArr.add(fd.getAttributes().getEmotion().getHappiness());
+					emotionMap.put(fd.getAttributes().getEmotion().getHappiness(),"happiness");
+					rankingArr.add(fd.getAttributes().getEmotion().getAnger());
+					emotionMap.put(fd.getAttributes().getEmotion().getAnger(),"anger");
+					rankingArr.add(fd.getAttributes().getEmotion().getDisgust());
+					emotionMap.put(fd.getAttributes().getEmotion().getDisgust(),"disgust");
+					rankingArr.add(fd.getAttributes().getEmotion().getFear());
+					emotionMap.put(fd.getAttributes().getEmotion().getFear(),"fear");
+					rankingArr.add(fd.getAttributes().getEmotion().getSurprise());
+					emotionMap.put(fd.getAttributes().getEmotion().getSurprise(),"surprise");
+					Collections.sort(rankingArr);
+					//感情
+					switch(emotionMap.get(rankingArr.get(0))) {
+						case "sadness":
+							nature += Constants.SADNESS_NATURE;
+							treasure += Constants.SADNESS_TREASURE;
+							historical += Constants.SADNESS_HISTORICAL;
+							resort += Constants.SADNESS_RESORT;
+							city += Constants.SADNESS_CITY;
+							break;
+						case "neutral":
+							nature += Constants.NEUTRAL_NATURE;
+							treasure += Constants.NEUTRAL_TREASURE;
+							historical += Constants.NEUTRAL_HISTORICAL;
+							resort += Constants.NEUTRAL_RESORT;
+							city += Constants.NEUTRAL_CITY;
+							break;
+						case "happiness":
+							nature += Constants.HAPPINESS_NATURE;
+							treasure += Constants.HAPPINESS_TREASURE;
+							historical += Constants.HAPPINESS_HISTORICAL;
+							resort += Constants.HAPPINESS_RESORT;
+							city += Constants.HAPPINESS_CITY;
+							break;
+						case "anger":
+							nature += Constants.ANGER_NATURE;
+							treasure += Constants.ANGER_TREASURE;
+							historical += Constants.ANGER_HISTORICAL;
+							resort += Constants.ANGER_RESORT;
+							city += Constants.ANGER_CITY;
+							break;
+						case "disgust":
+							nature += Constants.DISGUST_NATURE;
+							treasure += Constants.DISGUST_TREASURE;
+							historical += Constants.DISGUST_HISTORICAL;
+							resort += Constants.DISGUST_RESORT;
+							city += Constants.DISGUST_CITY;
+							break;
+						case "fear":
+							nature += Constants.FEAR_NATURE;
+							treasure += Constants.FEAR_TREASURE;
+							historical += Constants.FEAR_HISTORICAL;
+							resort += Constants.FEAR_RESORT;
+							city += Constants.FEAR_CITY;
+							break;
+						case "surprise":
+							nature += Constants.SURPRISING_NATURE;
+							treasure += Constants.SURPRISING_TREASURE;
+							historical += Constants.SURPRISING_HISTORICAL;
+							resort += Constants.SURPRISING_RESORT;
+							city += Constants.SURPRISING_CITY;		
+					}
+					String targetName = "nature";
+					float targetNum = nature;
+					
+					List<String> targetArr = new ArrayList<String>();
+					targetArr.add(targetName);
+					if(treasure>targetNum) {
+						targetName = "treasure";
+						targetNum = treasure;
+						targetArr.clear();
+						targetArr.add(targetName);
+					}else if(treasure == targetNum) {
+						targetArr.add("treasure");
+					}
+					if(historical>targetNum) {
+						targetName = "historical";
+						targetNum = historical;
+						targetArr.clear();
+						targetArr.add(targetName);
+					}else if(treasure == targetNum) {
+						targetArr.add("historical");
+					}
+					if(resort>targetNum) {
+						targetName = "resort";
+						targetNum = resort;
+						targetArr.clear();
+						targetArr.add(targetName);
+					}else if(resort == targetNum) {
+						targetArr.add("resort");
+					}
+					if(city>targetNum) {
+						targetName = "city";
+						targetNum = city;
+						targetArr.clear();
+						targetArr.add(targetName);
+					}else if(city == targetNum) {
+						targetArr.add("city");
+					}
+					//同数のものがある場合
+					FaceRecognizeService frs = new FaceRecognizeService();
+					System.out.println(frs.generateLocation(targetArr));
 				});
-				System.out.println(fd.getAttributes().get("emotion").getEmotion());
-				System.out.println(fd.getAttributes().get("emotion").getEmotion().keySet());
-				System.out.println(fd.getAttributes().get("age").getAge().get("value"));
-				System.out.println(fd.getAttributes().get("gender").getGender().get(("value")));
-			});
-			System.out.println("あるよ！");
-		}
+			}
 		}catch(Exception ex) {
 			System.out.print("エラー");
 			System.out.print(ex);
 		}
 	}
+	public String generateTripSuggestion() {
+		return "";
+	}
+	
 	
 	@GetMapping("just/doit")
 	public void doit() throws IOException {

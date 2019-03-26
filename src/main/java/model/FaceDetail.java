@@ -11,5 +11,5 @@ public class FaceDetail {
     public FaceDetail(){
     }
     @Getter
-	public Map<String,Attributes> attributes;	
+	public Attributes attributes;	
 }

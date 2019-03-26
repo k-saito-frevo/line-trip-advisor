@@ -84,26 +84,22 @@ public class MessageHandler {
     	String result = faceRecognizeService.tryPost(imgStr);
 		ObjectMapper mapper = new ObjectMapper();
 		Face face = mapper.readValue(result, Face.class);
-
+		
 		//ファイル削除
 		FileSystem fs = FileSystems.getDefault();
 		Path path = (fs.getPath(jpegTarget));
 		Files.delete(path);
-		System.out.println(face.image_id);
-		System.out.println(face.request_id);
-		System.out.println(face.time_used);
-		System.out.println(face.faces);
 		if(face.faces.size()<1) {
 			return new TextMessage("顔が検出されません");
 		}
-		System.out.println(face);
-    	return new TextMessage(result);
+		String str = faceRecognizeService.recognizeFace(face);
+    	return new TextMessage(str);
     }
     //それ以外
     @EventMapping
     public TextMessage defaultMessageEvent(Event event) {
         System.out.println("デフォルトメッセージ: " + event);
-        return new TextMessage("画像を送って!¥r¥n");
+        return new TextMessage("画像を送ってください!¥r¥n");
     }
     @GetMapping("test")
     public void testEvent() {

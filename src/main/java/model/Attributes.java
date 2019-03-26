@@ -10,11 +10,11 @@ import lombok.Getter;
 public class Attributes {
 	public Attributes(){}
 	@Getter
-	public Map<String,Emotion> emotion;
+	public Emotion emotion;
 	@Getter
-	public Map<String,Beauty> beauty;
+	public Beauty beauty;
 	@Getter
-	public Map<String,Object> gender;
+	public ValueSet gender;
 	@Getter
-	public Map<String,Object> age;
+	public ValueSet age;
 }
