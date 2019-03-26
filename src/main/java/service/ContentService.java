@@ -40,7 +40,7 @@ public class ContentService {
 	public  String getContent(String messageId,String jpegTarget) throws FileNotFoundException {
 		try {
 			final LineMessagingClient client = LineMessagingClient.builder("ZWAMZw1b9/qepYdvDh38XrUjVpqL8B4lxrdibQN7lKXc4BY6/svwnG36pHFUvp422mZrjbkMQBVOAS6UFSP4GWirjF83glbh3VzuDjItXKdrgUv9YrDJemoyD6g78aGpi+/QmNOPUhf2l+t16kQtUQdB04t89/1O/w1cDnyilFU=").build();
-			MessageContentResponse messageContentResponse = client.getMessageContent("9539237466637").get();        
+			MessageContentResponse messageContentResponse = client.getMessageContent(messageId).get();        
 			FileOutputStream outer = new FileOutputStream(jpegTarget);
 			int data;
 			//ファイル書き込み
@@ -51,7 +51,7 @@ public class ContentService {
 			outer.close();
 			FileSystem fs = FileSystems.getDefault();
 			Path path = (fs.getPath(jpegTarget));
-			System.out.println("ゲットコンテントできてる");
+			System.out.println("ゲットコンテントできてる"+ path.toString());
 			return "data:image/jpg;base64," + Base64.getEncoder().encodeToString((Files.readAllBytes(path)));
 		}catch (Exception e) {
 			System.out.println(e);

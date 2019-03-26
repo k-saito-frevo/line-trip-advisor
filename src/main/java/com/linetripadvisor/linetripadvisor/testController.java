@@ -6,8 +6,11 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,46 +43,48 @@ public class testController {
 	@GetMapping("test")
 	public void test() throws IOException{
 		try {			
-//		final LineMessagingClient client = LineMessagingClient.builder("ZWAMZw1b9/qepYdvDh38XrUjVpqL8B4lxrdibQN7lKXc4BY6/svwnG36pHFUvp422mZrjbkMQBVOAS6UFSP4GWirjF83glbh3VzuDjItXKdrgUv9YrDJemoyD6g78aGpi+/QmNOPUhf2l+t16kQtUQdB04t89/1O/w1cDnyilFU=").build();
-//		final MessageContentResponse messageContentResponse;
-//		messageContentResponse = client.getMessageContent("9540504294177").get();
-//		Date date = new Date();
-//		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-//        
-//		String jpegTarget = "./line-test" + sdf.format(date).toString() + ".jpg";
-//
-//		FileOutputStream outer = new FileOutputStream(jpegTarget);
-//		int data;
-//	     while ((data = messageContentResponse.getStream().read()) != -1) {
-//	       outer.write((byte) data);
-//	    }
-//		outer.flush();
-//		outer.close();
-//		FileSystem fs = FileSystems.getDefault();
-//		Path path = (fs.getPath(jpegTarget));
-//		String testString =  "data:image/jpg;base64," + Base64.getEncoder().encodeToString((Files.readAllBytes(path)));
-//    	FaceRecognizeService faceRecognizeService = new FaceRecognizeService();
-//    	String result = faceRecognizeService.tryPost(testString);
-//		Files.delete(path);
-//		System.out.println(result);
-			FileSystem testFs = FileSystems.getDefault();
-			Path pathJson = testFs.getPath("./test.json");
-			List<String> result = Files.readAllLines(pathJson);
+		final LineMessagingClient client = LineMessagingClient.builder("ZWAMZw1b9/qepYdvDh38XrUjVpqL8B4lxrdibQN7lKXc4BY6/svwnG36pHFUvp422mZrjbkMQBVOAS6UFSP4GWirjF83glbh3VzuDjItXKdrgUv9YrDJemoyD6g78aGpi+/QmNOPUhf2l+t16kQtUQdB04t89/1O/w1cDnyilFU=").build();
+		final MessageContentResponse messageContentResponse;
+		messageContentResponse = client.getMessageContent("9581247313457").get();
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        
+		String jpegTarget = "./line-test" + sdf.format(date).toString() + ".jpg";
+
+		FileOutputStream outer = new FileOutputStream(jpegTarget);
+		int data;
+	     while ((data = messageContentResponse.getStream().read()) != -1) {
+	       outer.write((byte) data);
+	    }
+		outer.flush();
+		outer.close();
+		FileSystem fs = FileSystems.getDefault();
+		Path path = (fs.getPath(jpegTarget));
+		System.out.println("ここがパスだよ");
+		System.out.println(path.toString());
+		String testString =  "data:image/jpg;base64," + Base64.getEncoder().encodeToString((Files.readAllBytes(path)));
+		FaceRecognizeService faceRecognizeService = new FaceRecognizeService();
+    	String res = faceRecognizeService.tryPost(testString);
+		Files.delete(path);
+		System.out.println(res);
+//			FileSystem testFs = FileSystems.getDefault();
+//			Path pathJson = testFs.getPath("./test.json");
+//			List<String> result = Files.readAllLines(pathJson);
 			ObjectMapper mapper = new ObjectMapper();
-			try {
-				JsonNode node = mapper.readTree(result.get(0));
-				System.out.println("ここまできてる");
-				System.out.println(node);
-				System.out.println(node.get("image_id"));
-				System.out.println(node.get("request_id"));
-				System.out.println(node.get("time_used"));
-				System.out.println("ここまできてる");
-			} catch (IOException e) {
-				System.out.println("Welcome　to Error");
-				e.printStackTrace();
-			}
+//			try {
+//				JsonNode node = mapper.readTree(result.get(0));
+//				System.out.println("ここまできてる");
+//				System.out.println(node);
+//				System.out.println(node.get("image_id"));
+//				System.out.println(node.get("request_id"));
+//				System.out.println(node.get("time_used"));
+//				System.out.println("ここまできてる");
+//			} catch (IOException e) {
+//				System.out.println("Welcome　to Error");
+//				e.printStackTrace();
+//			}
 			
-			Face face = mapper.readValue(result.get(0), Face.class);
+			Face face = mapper.readValue(res, Face.class);
 			List<Float> rankingArr = new ArrayList<Float>();
 			Map<Float,String> emotionMap = new HashMap<>();
 			
