@@ -211,7 +211,7 @@ import model.FaceDetail;
 		}
 		//
 		public String generateLocation(List<String> arr) {
-			String str = "あなたにオススメの旅行先はこちら!\\\\n";
+			String str = "あなたにオススメの旅行先はこちら!\n";
 			Random r = new Random();
 			if(arr.size()>1) {
 				for(int i =1;i<6;i++) {
@@ -234,8 +234,8 @@ import model.FaceDetail;
 							candidateArr = Constants.CITY;
 							break;
 					}
-					str += "【第"+i+"位】\\\\n";
-					str += candidateArr[r.nextInt(candidateArr.length)]+"\\\\n";
+					str += "【第"+i+"位】\n";
+					str += candidateArr[r.nextInt(candidateArr.length)]+"\n";
 				}
 			}else {
 				String targetStr = arr.get(0);
@@ -258,8 +258,8 @@ import model.FaceDetail;
 						break;
 				}
 				for(int i =1;i<6;i++) {
-					str += "【第"+i+"位】\\\\n";
-					str += candidateArr[r.nextInt(candidateArr.length)]+"\\\\n"; 										
+					str += "【第"+i+"位】\n";
+					str += candidateArr[r.nextInt(candidateArr.length)]+"\n"; 										
 				}	
 			}
 			return str;
