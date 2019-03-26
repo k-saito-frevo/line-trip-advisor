@@ -70,30 +70,36 @@ public class MessageHandler {
     //イメージファイルがきた時に呼ばれるよ
     @EventMapping
     public TextMessage handleImageMessageEvent(MessageEvent<ImageMessageContent>event) throws JsonParseException, JsonMappingException, IOException {
-    	String messageId = event.getMessage().getId();
-    	System.out.println("メッセージID:" + messageId);
-    	ContentService contentService = new ContentService();
-		Date date = new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");        
-		String jpegTarget = "./line-test" + sdf.format(date).toString() + ".jpg";
-    	//コンテンツを取得
-    	String imgStr = contentService.getContent(messageId,jpegTarget);
-    	if(imgStr.isEmpty() || imgStr == null) return new TextMessage("エラーです");
-    	//顔認証取得
-    	FaceRecognizeService faceRecognizeService = new FaceRecognizeService();
-    	String result = faceRecognizeService.tryPost(imgStr);
-		ObjectMapper mapper = new ObjectMapper();
-		Face face = mapper.readValue(result, Face.class);
-		
-		//ファイル削除
-		FileSystem fs = FileSystems.getDefault();
-		Path path = (fs.getPath(jpegTarget));
-		Files.delete(path);
-		if(face.faces.size()<1) {
-			return new TextMessage("顔が検出されません");
-		}
-		String str = faceRecognizeService.recognizeFace(face);
-    	return new TextMessage(str);
+    	try {
+	    	String messageId = event.getMessage().getId();
+	    	System.out.println("メッセージID:" + messageId);
+	    	ContentService contentService = new ContentService();
+			Date date = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");        
+			String jpegTarget = "./line-test" + sdf.format(date).toString() + ".jpg";
+	    	//コンテンツを取得
+	    	String imgStr = contentService.getContent(messageId,jpegTarget);
+	    	if(imgStr.isEmpty() || imgStr == null) return new TextMessage("エラーです");
+	    	//顔認証取得
+	    	FaceRecognizeService faceRecognizeService = new FaceRecognizeService();
+	    	String result = faceRecognizeService.tryPost(imgStr);
+			ObjectMapper mapper = new ObjectMapper();
+			Face face = mapper.readValue(result, Face.class);
+			
+			//ファイル削除
+			FileSystem fs = FileSystems.getDefault();
+			Path path = (fs.getPath(jpegTarget));
+			Files.delete(path);
+			if(face.faces.size()<1) {
+				return new TextMessage("顔が検出されません");
+			}
+			String str = faceRecognizeService.recognizeFace(face);
+	    	return new TextMessage(str);
+    	}catch(Exception ex) {
+    		System.out.println("エラー発生！！");
+    		System.out.println(ex);
+    		return new TextMessage("エラーだよ");
+    	}
     }
     //それ以外
     @EventMapping

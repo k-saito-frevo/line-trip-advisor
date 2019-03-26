@@ -55,6 +55,7 @@ import model.FaceDetail;
 		//顔の分析を元に返却するメッセージを返す
 		public String recognizeFace(Face face) {
 			try {
+				System.out.println("認証結果");
 				List<Float> rankingArr = new ArrayList<Float>();
 				Map<Float,String> emotionMap = new HashMap<>();
 				String res = "";
@@ -214,7 +215,7 @@ import model.FaceDetail;
 		}
 		//
 		public String generateLocation(List<String> arr) {
-			String str = "あなたにオススメの旅行先はこちら!¥r¥n";
+			String str = "あなたにオススメの旅行先はこちら!¥n";
 			Random r = new Random();
 			if(arr.size()>1) {
 				for(int i =1;i<6;i++) {
