@@ -59,11 +59,6 @@ public class MessageHandler {
 	//テキストメッセージがきた時に呼ばれるよ
     @EventMapping
     public TextMessage handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws IOException {
-        System.out.println("event: " + event);
-        System.out.println("送られたメッセージ: " + event.getMessage().getText());
-        Resource resource = resourceLoader.getResource(COUNTRY_INFO);
-        System.out.println("ここここ");
-        System.out.println(resource);
         return new TextMessage("");
     }
     

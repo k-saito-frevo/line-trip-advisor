@@ -35,8 +35,8 @@ import model.FaceDetail;
 				headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
 				MultiValueMap<String, String> body= new LinkedMultiValueMap<String, String>();
-				body.add("api_key", "jpY1EEucLMZmcfmNKHNbHoiLoGpOEAJ7");
-				body.add("api_secret", "_cCinbAjgxewP8fQRyTARbFh66t53Y6h");
+				body.add("api_key", System.getenv("API_KEY"));
+				body.add("api_secret", System.getenv("API_SECRET"));
 				body.add("image_base64", imgSrc);
 				body.add("return_attributes", "gender,age,smiling,emotion,headpose,facequality,eyestatus,mouthstatus,skinstatus,blur,ethnicity,beauty,eyegaze");
 				
@@ -234,8 +234,7 @@ import model.FaceDetail;
 							candidateArr = Constants.CITY;
 							break;
 					}
-					str += "【第"+i+"位】\n";
-					str += candidateArr[r.nextInt(candidateArr.length)]+"\n";
+					str += "【第"+i+"位】" + candidateArr[r.nextInt(candidateArr.length)]+"\n";
 				}
 			}else {
 				String targetStr = arr.get(0);
@@ -258,8 +257,7 @@ import model.FaceDetail;
 						break;
 				}
 				for(int i =1;i<6;i++) {
-					str += "【第"+i+"位】\n";
-					str += candidateArr[r.nextInt(candidateArr.length)]+"\n"; 										
+					str += "【第"+i+"位】"+candidateArr[r.nextInt(candidateArr.length)]+"\n";
 				}	
 			}
 			return str;
