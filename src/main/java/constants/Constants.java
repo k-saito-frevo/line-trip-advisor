@@ -2,6 +2,7 @@ package constants;
 
 public class Constants {
 	//旅行先
+	public final static String LINK = "";
 	//ネイチャー
 	public final static String AUCKLAND = "オークランド";
 	public final static String CAIRNS  = "ケアンズ";

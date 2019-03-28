@@ -51,7 +51,6 @@ import model.FaceDetail;
 		//顔の分析を元に返却するメッセージを返す
 		public String recognizeFace(Face face) {
 			try {
-				System.out.println("認証結果");
 				List<Float> rankingArr = new ArrayList<Float>();
 				Map<Float,String> emotionMap = new HashMap<>();
 				String res = "";
@@ -213,6 +212,9 @@ import model.FaceDetail;
 		public String generateLocation(List<String> arr) {
 			String str = "あなたにオススメの旅行先はこちら!\n";
 			Random r = new Random();
+			List<Integer> intArr = new ArrayList<Integer>();
+			int rNum = 0;
+			int counter =0;
 			if(arr.size()>1) {
 				for(int i =1;i<6;i++) {
 					String targetStr = arr.get(r.nextInt(arr.size()));
@@ -234,7 +236,12 @@ import model.FaceDetail;
 							candidateArr = Constants.CITY;
 							break;
 					}
-					str += "【第"+i+"位】" + candidateArr[r.nextInt(candidateArr.length)]+"\n";
+	 				while(true) {
+	 					counter++;
+	 					rNum = r.nextInt(candidateArr.length);
+	 					if(!intArr.contains(rNum) || counter > candidateArr.length) break;
+	 				}
+					str += "【第"+i+"位】" + candidateArr[rNum]+"\n";
 				}
 			}else {
 				String targetStr = arr.get(0);
@@ -257,6 +264,10 @@ import model.FaceDetail;
 						break;
 				}
 				for(int i =1;i<6;i++) {
+	 				while(true) {
+	 					rNum = r.nextInt(candidateArr.length);
+	 					if(!intArr.contains(rNum)) break;
+	 				}
 					str += "【第"+i+"位】"+candidateArr[r.nextInt(candidateArr.length)]+"\n";
 				}	
 			}
