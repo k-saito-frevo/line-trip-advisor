@@ -214,6 +214,7 @@ public class FaceRecognizeService {
 	//
 	public String generateLocation(List<String> arr) {
 		String str = "あなたにオススメの旅行先はこちら!\n";
+		String targetCode ="";
 		Random r = new Random();
 		List<Integer> intArr = new ArrayList<Integer>();
 		int rNum = 0;
@@ -246,6 +247,7 @@ public class FaceRecognizeService {
 						break;
 				}
 				str += "【第" + i + "位】" + candidateArr[rNum] + "\n";
+				if(i==0)str += Constants.LINK + Constants.CODES.get(candidateArr[rNum])+ "\n";
 			}
 		} else {
 			String targetStr = arr.get(0);
@@ -274,6 +276,7 @@ public class FaceRecognizeService {
 						break;
 				}
 				str += "【第" + i + "位】" + candidateArr[r.nextInt(candidateArr.length)] + "\n";
+				if(i==0)str += Constants.LINK + Constants.CODES.get(candidateArr[r.nextInt(candidateArr.length)])+ "\n";
 			}
 		}
 		return str;
