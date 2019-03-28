@@ -51,7 +51,6 @@ public class ContentService {
 			outer.close();
 			FileSystem fs = FileSystems.getDefault();
 			Path path = (fs.getPath(jpegTarget));
-			System.out.println("ゲットコンテントできてる"+ path.toString());
 			return "data:image/jpg;base64," + Base64.getEncoder().encodeToString((Files.readAllBytes(path)));
 		}catch (Exception e) {
 			System.out.println(e);

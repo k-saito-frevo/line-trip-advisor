@@ -67,7 +67,6 @@ public class MessageHandler {
     public TextMessage handleImageMessageEvent(MessageEvent<ImageMessageContent>event) throws JsonParseException, JsonMappingException, IOException {
     	try {
 	    	String messageId = event.getMessage().getId();
-	    	System.out.println("メッセージID:" + messageId);
 	    	ContentService contentService = new ContentService();
 			Date date = new Date();
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");        
@@ -85,9 +84,6 @@ public class MessageHandler {
 			FileSystem fs = FileSystems.getDefault();
 			Path path = (fs.getPath(jpegTarget));
 			Files.delete(path);
-			System.out.println(face);
-			System.out.println(face.faces);
-			System.out.println(face.faces.size());
 			if(face.faces.size()<1) {
 				return new TextMessage("顔が検出されません");
 			}
