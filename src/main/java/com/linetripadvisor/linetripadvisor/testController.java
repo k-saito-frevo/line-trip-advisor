@@ -43,7 +43,7 @@ public class testController {
 	@GetMapping("test")
 	public void test() throws IOException{
 		try {			
-		final LineMessagingClient client = LineMessagingClient.builder("ZWAMZw1b9/qepYdvDh38XrUjVpqL8B4lxrdibQN7lKXc4BY6/svwnG36pHFUvp422mZrjbkMQBVOAS6UFSP4GWirjF83glbh3VzuDjItXKdrgUv9YrDJemoyD6g78aGpi+/QmNOPUhf2l+t16kQtUQdB04t89/1O/w1cDnyilFU=").build();
+		final LineMessagingClient client = LineMessagingClient.builder(System.getenv("LINE_SECRET")).build();
 		final MessageContentResponse messageContentResponse;
 		messageContentResponse = client.getMessageContent("9581247313457").get();
 		Date date = new Date();

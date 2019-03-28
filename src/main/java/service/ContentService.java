@@ -39,7 +39,7 @@ public class ContentService {
 	
 	public  String getContent(String messageId,String jpegTarget) throws FileNotFoundException {
 		try {
-			final LineMessagingClient client = LineMessagingClient.builder(System.getenv("API_SECRET")).build();
+			final LineMessagingClient client = LineMessagingClient.builder(System.getenv("LINE_SECRET")).build();
 			MessageContentResponse messageContentResponse = client.getMessageContent(messageId).get();        
 			FileOutputStream outer = new FileOutputStream(jpegTarget);
 			int data;
