@@ -207,6 +207,7 @@ public class FaceRecognizeService {
 			}
 			return res;
 		} catch (Exception ex) {
+			System.out.println(ex);
 			return "エラーが発生しました。しばらく経った後再度お送りください。";
 		}
 	}
