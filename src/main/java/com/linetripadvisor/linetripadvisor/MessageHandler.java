@@ -55,11 +55,10 @@ public class MessageHandler {
 	@Autowired
 	ResourceLoader resourceLoader;
 	
-	final String COUNTRY_INFO = "./static/country.json";
 	//テキストメッセージがきた時に呼ばれるよ
     @EventMapping
     public TextMessage handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws IOException {
-        return new TextMessage("");
+        return new TextMessage("画像送って～");
     }
     
     //イメージファイルがきた時に呼ばれるよ
@@ -85,41 +84,22 @@ public class MessageHandler {
 			Path path = (fs.getPath(jpegTarget));
 			Files.delete(path);
 			if(face.faces.size()<1) {
-				return new TextMessage("顔が検出されません");
+				return new TextMessage("顔が検出されません。人の顔が入った画像を送信してください。");
 			}
 			String str = faceRecognizeService.recognizeFace(face);
 	    	return new TextMessage(str);
     	}catch(Exception ex) {
-    		System.out.println("エラー発生！！");
+    		System.out.println("ーーー【エラー発生！！】－－－");
     		System.out.println(ex);
-    		return new TextMessage("エラーだよ");
+    		return new TextMessage("エラーが発生しました。時間をおいて再度送ってみてください。");
     	}
     }
     //それ以外
     @EventMapping
     public TextMessage defaultMessageEvent(Event event) {
         System.out.println("デフォルトメッセージ: " + event);
-        return new TextMessage("画像を送ってください!¥r¥n");
-    }
-    @GetMapping("test")
-    public void testEvent() {
-    	System.out.println("ここにきてるよー");
+        return new TextMessage("画像を送ってください!");
     }
     
-    /**
-     * メッセージコンテンツを取得する.
-     * @param messageId メッセージID
-     * @param messageConsumer メッセージコンシューマ
-     */
-//    private void handleContent(String messageId, Consumer<MessageContentResponse> messageConsumer) {
-//        final MessageContentResponse messageContentResponse;
-//        try {
-//            messageContentResponse = lineMessagingClient.getMessageContent(messageId).get();
-//        } catch (InterruptedException | ExecutionException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//        messageConsumer.accept(messageContentResponse);
-//    }
 
 }

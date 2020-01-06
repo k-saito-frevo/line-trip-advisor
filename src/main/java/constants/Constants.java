@@ -9,6 +9,30 @@ public class Constants {
 	Constants(){
 		
 	}
+	//文字列
+	public final static String API_KEY_L = "API_KEY";
+	public final static String API_KEY_S = "api_ley";
+	public final static String API_SECRET_L = "API_SECRET";
+	public final static String API_SECRET_S = "api_secret";
+	public final static String IMAGE_BASE_64 = "image_base64"; 
+	public final static String RETURN_ATTRIBUTES = "return_attributes";
+	public final static String SADDNESS_S ="sadness";
+	public final static String NEUTRAL_S = "neutral";
+	public final static String HAPPINESS_S = "happiness";
+	public final static String ANGER_S	= "anger";
+	public final static String DISGUST_S = "disgust";
+	public final static String FEAR_S = "fear";
+	public final static String SURPRISE_S = "surprise";
+	public final static String TREASURE_S = "treasuse";
+	public final static String HISTORICAL_S = "historical";
+	public final static String RESORT_S = "resort";
+	public final static String CITY_S = "city";
+	public final static String NATURE_S = "nature";
+
+	
+	//顔認証API
+	public final static String DETECT_URL = "https://api-us.faceplusplus.com/facepp/v3/detect";
+	
 	//旅行先
 	public final static String LINK = "https://www.tripadvisor.jp/";
 	public final static Map<String,String> CODES = new HashMap<String,String>(){
