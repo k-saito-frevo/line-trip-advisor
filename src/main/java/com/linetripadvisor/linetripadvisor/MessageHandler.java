@@ -54,6 +54,10 @@ public class MessageHandler {
     private LineMessagingClient lineMessagingClient;
 	@Autowired
 	ResourceLoader resourceLoader;
+	@Autowired
+	FaceRecognizeService faceRecognizeService;
+	@Autowired
+	ContentService contentService;
 	
 	//テキストメッセージがきた時に呼ばれるよ
     @EventMapping
@@ -67,7 +71,6 @@ public class MessageHandler {
     	try {
     		System.out.println("とりあえず届いてるよー　");
 	    	String messageId = event.getMessage().getId();
-	    	ContentService contentService = new ContentService();
 			Date date = new Date();
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");        
 			String jpegTarget = "./line-test" + sdf.format(date).toString() + ".jpg";
@@ -75,7 +78,6 @@ public class MessageHandler {
 	    	String imgStr = contentService.getContent(messageId,jpegTarget);
 	    	if(imgStr.isEmpty() || imgStr == null) return new TextMessage("エラーです");
 	    	//顔認証取得
-	    	FaceRecognizeService faceRecognizeService = new FaceRecognizeService();
 	    	String result = faceRecognizeService.tryPost(imgStr);
 	    	System.out.println("＊＊＊＊＊リザルト＊＊＊＊＊");
 	    	System.out.println(result);

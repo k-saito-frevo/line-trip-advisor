@@ -11,7 +11,7 @@ public class Constants {
 	}
 	//文字列
 	public final static String API_KEY_L = "API_KEY";
-	public final static String API_KEY_S = "api_ley";
+	public final static String API_KEY_S = "api_key";
 	public final static String API_SECRET_L = "API_SECRET";
 	public final static String API_SECRET_S = "api_secret";
 	public final static String IMAGE_BASE_64 = "image_base64"; 
