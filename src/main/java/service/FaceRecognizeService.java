@@ -286,9 +286,9 @@ public class FaceRecognizeService {
 					if (!intArr.contains(rNum))	break;
 				}
 				intArr.add(rNum);
-				String target = candidateArr[r.nextInt(candidateArr.length)];
-				str += "【第" + i + "位】" + target + "\n";
-				if(i==1)str += Constants.LINK + Constants.CODES.get(target)+ "\n";
+				//String target = candidateArr[r.nextInt(candidateArr.length)];
+				str += "【第" + i + "位】" + candidateArr[rNum] + "\n";
+				if(i==1)str += Constants.LINK + Constants.CODES.get(candidateArr[rNum])+ "\n";
 			}
 		}
 		return str;
