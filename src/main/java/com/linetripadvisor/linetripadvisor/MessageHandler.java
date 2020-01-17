@@ -66,7 +66,6 @@ public class MessageHandler {
     @EventMapping
     public TextMessage handleImageMessageEvent(MessageEvent<ImageMessageContent>event) throws JsonParseException, JsonMappingException, IOException {
     	try {
-    		System.out.println("とりあえず届いてるよー　");
 	    	String messageId = event.getMessage().getId();
 	    	ContentService contentService = new ContentService();
 			Date date = new Date();
@@ -78,8 +77,6 @@ public class MessageHandler {
 	    	//顔認証取得
 	    	FaceRecognizeService faceRecognizeService = new FaceRecognizeService();
 	    	String result = faceRecognizeService.tryPost(imgStr);
-	    	System.out.println("＊＊＊＊＊リザルト＊＊＊＊＊");
-	    	System.out.println(result);
 			ObjectMapper mapper = new ObjectMapper();
 			Face face = mapper.readValue(result, Face.class);
 			

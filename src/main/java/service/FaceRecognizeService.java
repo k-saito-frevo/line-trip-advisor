@@ -255,8 +255,8 @@ public class FaceRecognizeService {
 					counter++;
 					rNum = r.nextInt(candidateArr.length);
 					if (!intArr.contains(rNum) || counter > candidateArr.length) break;
-					intArr.add(rNum);
 				}
+				intArr.add(rNum);
 				str += "【第" + i + "位】" + candidateArr[rNum] + "\n";
 				if(i==1)str += Constants.LINK + Constants.CODES.get(candidateArr[rNum])+ "\n";
 			}
@@ -284,8 +284,8 @@ public class FaceRecognizeService {
 				while (true) {
 					rNum = r.nextInt(candidateArr.length);
 					if (!intArr.contains(rNum))	break;
-					intArr.add(rNum);
 				}
+				intArr.add(rNum);
 				String target = candidateArr[r.nextInt(candidateArr.length)];
 				str += "【第" + i + "位】" + target + "\n";
 				if(i==1)str += Constants.LINK + Constants.CODES.get(target)+ "\n";
